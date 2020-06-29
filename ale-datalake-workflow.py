@@ -7,8 +7,8 @@ from airflow.operators.dummy_operator import DummyOperator
 
 default_args = {
     'owner': 'airflow',
-    'start_date': airflow.utils.dates.days_ago(7),
-    'retries': 2
+    'start_date': airflow.utils.dates.days_ago(2),
+    'retries': 0
 }
 
 dag = DAG(
@@ -26,7 +26,7 @@ fill_datalake = KubernetesPodOperator(
     default_args=default_args,
     image='mragesh/phm-ale-py-code:latest',
     image_pull_secrets="docker-secret",
-    cmds=["Python", "-c"],
+    cmds=["python", "-c"],
     arguments=["prep-data-lake.py"],
     get_logs=True)
 
