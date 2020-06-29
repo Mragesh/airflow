@@ -38,6 +38,7 @@ run_spark = KubernetesPodOperator(
     dag=dag,
     default_args=default_args,
     image='mragesh/spark-py:latest',
+    image_pull_policy='Always',
     cmds=["/opt/entrypoint.sh"],
     arguments=['/opt/spark/python/app_src_code/submit-job.sh',
                's3a://application-code/spark_jobs/phm_alinity_i_205_results_etl.py'],
