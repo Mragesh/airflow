@@ -32,7 +32,7 @@ fill_datalake = KubernetesPodOperator(
     get_logs=True)
 
 run_spark = KubernetesPodOperator(
-    namespace="airflow",
+    namespace="default",
     name="ETL-spark",
     task_id='run-transform',
     dag=dag,
