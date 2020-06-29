@@ -30,12 +30,12 @@ fill_datalake = KubernetesPodOperator(
                                       get_logs=True)
 
 stop = DummyOperator(
-    task_id='run_this_last',
+    task_id='stop',
     dag=dag,
 )
 
-fill_datalake.set_upstream(start)
-stop.set_upstream(fill_datalake)
+start >> fill_datalake
+fill_datalake >> stop
 
 if __name__ == "__main__":
     dag.cli()
