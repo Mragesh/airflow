@@ -1,3 +1,5 @@
+import airflow
+
 from airflow import DAG
 from datetime import datetime, timedelta
 from airflow.contrib.operators.kubernetes_pod_operator import KubernetesPodOperator
@@ -5,7 +7,7 @@ from airflow.operators.dummy_operator import DummyOperator
 
 default_args = {
     'owner': 'airflow',
-    'start_date': datetime.utcnow(),
+    'start_date': airflow.utils.dates.days_ago(7),
     'retries': 2
 }
 
@@ -17,15 +19,15 @@ dag = DAG(
 )
 
 fill_datalake = KubernetesPodOperator(
-                                      namespace="airflow",
-                                      name="datalake-prep",
-                                      task_id='prep-datalake',
-                                      dag=dag,
-                                      default_args=default_args,
-                                      image='mragesh/phm-ale-py-code:latest',
-                                      cmds=["Python", "-c"],
-                                      arguments=["prep-data-lake.py"],
-                                      get_logs=True)
+    namespace="airflow",
+    name="datalake-prep",
+    task_id='prep-datalake',
+    dag=dag,
+    default_args=default_args,
+    image='mragesh/phm-ale-py-code:latest',
+    cmds=["Python", "-c"],
+    arguments=["prep-data-lake.py"],
+    get_logs=True)
 
 stop = DummyOperator(
     task_id='stop',
