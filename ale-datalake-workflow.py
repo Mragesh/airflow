@@ -16,8 +16,6 @@ dag = DAG(
     dagrun_timeout=timedelta(minutes=119),
 )
 
-start = DummyOperator(task_id='start', dag=dag)
-
 fill_datalake = KubernetesPodOperator(
                                       namespace="airflow",
                                       name="datalake-prep",
@@ -34,7 +32,6 @@ stop = DummyOperator(
     dag=dag,
 )
 
-start >> fill_datalake
 fill_datalake >> stop
 
 if __name__ == "__main__":
