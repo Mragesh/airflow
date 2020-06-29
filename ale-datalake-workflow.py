@@ -16,6 +16,7 @@ dag = DAG(
     default_args=default_args,
     schedule_interval=timedelta(minutes=120),  # '0 0 * * *',
     dagrun_timeout=timedelta(minutes=119),
+    catchup=False
 )
 
 fill_datalake = KubernetesPodOperator(
@@ -27,15 +28,29 @@ fill_datalake = KubernetesPodOperator(
     image='mragesh/phm-ale-py-code:latest',
     image_pull_secrets="docker-secret",
     cmds=["python"],
-    arguments=[u"prep-data-lake.py"],
+    arguments=[u'prep-data-lake.py'],
     get_logs=True)
+
+run_spark = KubernetesPodOperator(
+    namespace="airflow",
+    name="ETL-spark",
+    task_id='run-transform',
+    dag=dag,
+    default_args=default_args,
+    image='mragesh/spark-py:latest',
+    cmds=["/opt/spark/python/app_src_code/submit-job.sh"],
+    arguments=[u's3a://application-code/spark_jobs/phm_alinity_i_205_results_etl.py'],
+    get_logs=True)
+
+fill_datalake >> run_spark
 
 stop = DummyOperator(
     task_id='stop',
     dag=dag,
 )
 
-fill_datalake >> stop
+
+run_spark >> stop
 
 if __name__ == "__main__":
     dag.cli()
