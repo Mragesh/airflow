@@ -18,7 +18,10 @@ dag = DAG(
 
 start = DummyOperator(task_id='start', dag=dag)
 
-fill_datalake = KubernetesPodOperator(task_id='prep-datalake',
+fill_datalake = KubernetesPodOperator(
+                                      namespace="airflow",
+                                      name="datalake-prep",
+                                      task_id='prep-datalake',
                                       dag=dag,
                                       default_args=default_args,
                                       image='mragesh/phm-ale-py-code:latest',
