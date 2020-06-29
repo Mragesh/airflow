@@ -26,8 +26,8 @@ fill_datalake = KubernetesPodOperator(
     default_args=default_args,
     image='mragesh/phm-ale-py-code:latest',
     image_pull_secrets="docker-secret",
-    cmds=["python", "-c"],
-    arguments=["prep-data-lake.py"],
+    cmds=["python"],
+    arguments=[u"prep-data-lake.py"],
     get_logs=True)
 
 stop = DummyOperator(
