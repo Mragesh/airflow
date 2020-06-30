@@ -47,6 +47,20 @@ run_spark = KubernetesPodOperator(
 
 fill_datalake >> run_spark
 
+sync_partitions = KubernetesPodOperator(
+    namespace="airflow",
+    name="sync-partitions",
+    service_account_name="airflow",
+    task_id='run-sync-partitions',
+    dag=dag,
+    default_args=default_args,
+    image='mragesh/presto-cli:latest',
+    image_pull_policy='Always',
+    cmds=["/opt/sync_partitions.sh"],
+    get_logs=True)
+
+run_spark >> sync_partitions
+
 stop = DummyOperator(
     task_id='stop',
     dag=dag,
