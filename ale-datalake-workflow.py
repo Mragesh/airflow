@@ -61,13 +61,5 @@ sync_partitions = KubernetesPodOperator(
 
 run_spark >> sync_partitions
 
-stop = DummyOperator(
-    task_id='stop',
-    dag=dag,
-)
-
-
-run_spark >> stop
-
 if __name__ == "__main__":
     dag.cli()
