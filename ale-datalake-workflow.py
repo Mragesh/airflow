@@ -48,7 +48,7 @@ run_spark = KubernetesPodOperator(
 fill_datalake >> run_spark
 
 sync_partitions = KubernetesPodOperator(
-    namespace="airflow",
+    namespace="default",
     name="sync-partitions",
     service_account_name="airflow",
     task_id='run-sync-partitions',
